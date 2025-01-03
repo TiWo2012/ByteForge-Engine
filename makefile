@@ -1,5 +1,5 @@
 run: main
-	./main
+	./main byte.byt
 	
 main: main.cpp
 	g++ main.cpp -o main
