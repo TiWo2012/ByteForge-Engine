@@ -16,6 +16,8 @@
 #define _POP 6
 #define _PUSH 7
 #define _STACK_Clear 8
+#define _JIZ 9
+#define _JNZ 10
 
 // Registers (64 bit)
 #define _64A 901
@@ -182,6 +184,20 @@ void execute(std::vector<int> &fileContent) {
 
     case _STACK_Clear:
       stack.clear();
+      break;
+
+    case _JIZ:
+      if (f64 == 0) {
+        instructionPointer = fileContent[instructionPointer + 1];
+      }
+      instructionPointer += 2;
+      break;
+
+    case _JNZ:
+      if (f64 != 0) {
+        instructionPointer = fileContent[instructionPointer + 1];
+      }
+      instructionPointer += 2;
       break;
 
     default:
