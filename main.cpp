@@ -1,8 +1,10 @@
-
 #include "./sigma/sigmaUtils.hpp"
+#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+#define DEBUG 0
 
 // Instructions
 #define _NOP 0
@@ -10,6 +12,10 @@
 #define _JMP 2
 #define _MOV 3
 #define _REG 4
+#define _PRINT 5
+#define _POP 6
+#define _PUSH 7
+#define _STACK_Clear 8
 
 // Registers (64 bit)
 #define _64A 901
@@ -42,8 +48,13 @@ void execute(std::vector<int> &fileContent) {
   long long a64 = 0, b64 = 0, c64 = 0, d64 = 0, e64 = 0, f64 = 0;
   int a32 = 0, b32 = 0, c32 = 0, d32 = 0, e32 = 0, f32 = 0;
 
+  // stack
+  std::vector<char> stack;
+
   while (instructionPointer < fileContent.size()) {
     int currentOp = fileContent[instructionPointer];
+    if (DEBUG)
+      std::cout << "current instruction: " << currentOp << "\n";
 
     switch (currentOp) {
     case _NOP:
@@ -51,8 +62,9 @@ void execute(std::vector<int> &fileContent) {
       break;
 
     case _EOF:
-      std::cout << "EOF reached at operation " << instructionPointer + 1
-                << "\n";
+      if (DEBUG)
+        std::cout << "EOF reached at operation " << instructionPointer + 1
+                  << "\n";
       return;
 
     case _JMP:
@@ -87,7 +99,7 @@ void execute(std::vector<int> &fileContent) {
                       : (srcReg == _64E) ? &e64
                                          : &f64;
           moveValue(*targetReg, *sourceReg);
-          instructionPointer += 4;
+          instructionPointer += 3;
         } else {
           // Immediate value move
           immediateValue = fileContent[instructionPointer + 2];
@@ -98,7 +110,7 @@ void execute(std::vector<int> &fileContent) {
                       : (regType == _64E) ? &e64
                                           : &f64;
           moveImmediate(*targetReg, immediateValue);
-          instructionPointer += 3;
+          instructionPointer += 2;
         }
       }
 
@@ -126,7 +138,7 @@ void execute(std::vector<int> &fileContent) {
                       : (srcReg == _32E) ? &e32
                                          : &f32;
           moveValue(*targetReg, *sourceReg);
-          instructionPointer += 4;
+          instructionPointer += 3;
         } else {
           // Immediate value move
           immediateValue = fileContent[instructionPointer + 2];
@@ -137,12 +149,40 @@ void execute(std::vector<int> &fileContent) {
                       : (regType == _32E) ? &e32
                                           : &f32;
           moveImmediate(*targetReg, immediateValue);
-          instructionPointer += 3;
+          instructionPointer += 2;
         }
       }
 
       break;
     }
+
+    case _PRINT: {
+      if (DEBUG)
+        std::cout << "print statement reached\n";
+      std::string stackStr = "";
+
+      // Loop through the stack and append each value (converted to string) to
+      // the stackStr
+      for (size_t i = 0; i < stack.size(); i++) {
+        stackStr += stack[i];
+      }
+
+      std::cout << stackStr << "\n";
+      break;
+    }
+
+    case _POP:
+      f32 = stack[stack.size() - 1];
+      stack.pop_back();
+      break;
+
+    case _PUSH:
+      stack.push_back((char)f32);
+      break;
+
+    case _STACK_Clear:
+      stack.clear();
+      break;
 
     default:
       std::cout << "Error: Unknown operation code at instruction "
@@ -150,11 +190,17 @@ void execute(std::vector<int> &fileContent) {
       return;
     }
 
-    // Output the register states for debugging
-    std::cout << "a64: " << a64 << " b64: " << b64 << " c64: " << c64
-              << " d64: " << d64 << " e64: " << e64 << " f64: " << f64 << "\n";
-    std::cout << "a32: " << a32 << " b32: " << b32 << " c32: " << c32
-              << " d32: " << d32 << " e32: " << e32 << " f32: " << f32 << "\n";
+    if (DEBUG) {
+      // Output the register states for debugging
+      std::cout << "a64: " << a64 << " b64: " << b64 << " c64: " << c64
+                << " d64: " << d64 << " e64: " << e64 << " f64: " << f64
+                << "\n";
+      std::cout << "a32: " << a32 << " b32: " << b32 << " c32: " << c32
+                << " d32: " << d32 << " e32: " << e32 << " f32: " << f32
+                << "\n";
+    }
+
+    instructionPointer++;
   }
 }
 
