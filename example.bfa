@@ -1,0 +1,8 @@
+mov f32 104 push 
+mov f32 101 push 
+mov f32 108 push 
+mov f32 108 push 
+mov f32 111 push 
+mov f64 1 
+print 
+jiz 0 EOF

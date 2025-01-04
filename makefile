@@ -1,8 +1,9 @@
 run: main
-	./main byte.byt
+	./main -asm example.bfa
+	./main -exec a.byt
 	
 main: main.cpp
-	g++ main.cpp -o main
+	g++ -g main.cpp -o main
 
 clean:
 	rm main
