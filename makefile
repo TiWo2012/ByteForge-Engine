@@ -7,3 +7,5 @@ main: main.cpp
 
 clean:
 	rm main
+
+.PHONY: run clean
