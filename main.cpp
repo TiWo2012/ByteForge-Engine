@@ -21,6 +21,8 @@
 #define _STACK_Clear 8
 #define _JIZ 9
 #define _JNZ 10
+#define _ADD 11
+#define _SUB 12
 
 // Registers (64 bit)
 #define _64A 901
@@ -207,6 +209,16 @@ void execute(std::vector<int> &fileContent) {
       instructionPointer += 2;
       break;
 
+    case _ADD:
+      a64 = a64 + b64;
+      instructionPointer++;
+      break;
+
+    case _SUB:
+      a64 = a64 - b64;
+      instructionPointer++;
+      break;
+
     default:
       std::cout << "Error: Unknown operation code at instruction "
                 << instructionPointer << "\n";
@@ -227,7 +239,6 @@ void execute(std::vector<int> &fileContent) {
 
 void pushVal(int val, std::ofstream &out) { out << val << ", "; }
 
-// TODO
 void assemble(std::vector<std::string> fileContent) {
   std::ofstream out("a.byt");
   int instructionPointer = 0;
@@ -346,6 +357,12 @@ void assemble(std::vector<std::string> fileContent) {
       pushVal(10, out);
       pushVal(std::stoi(fileContent[instructionPointer + 1]), out);
       instructionPointer += 2;
+    } else if (currOp == "add") {
+      pushVal(11, out);
+      instructionPointer++;
+    } else if (currOp == "sub") {
+      pushVal(12, out);
+      instructionPointer++;
     } else {
       std::cout << "Error: Unknown operation code at instruction "
                 << instructionPointer << "\n";
