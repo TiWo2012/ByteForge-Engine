@@ -1,8 +1,19 @@
-mov f32 104 push 
-mov f32 101 push 
-mov f32 108 push 
-mov f32 108 push 
-mov f32 111 push 
-mov f64 1 
+mov a64 0 
+mov b64 1 
+add 
+mov f32 a64 
+push 
+mov f32 104 
+push 
+mov f32 101 
+push 
+mov f32 108 
+push 
+mov f32 108 
+push 
+mov f32 111 
+push 
+mov f32 10 
+push 
 print 
-jiz 0 EOF
+EOF

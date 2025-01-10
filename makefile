@@ -3,7 +3,7 @@ run: main
 	./main -exec a.byt
 	
 main: main.cpp
-	g++ -g main.cpp -o main
+	g++ -g main.cpp src/* -o main
 
 clean:
 	rm main
