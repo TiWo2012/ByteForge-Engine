@@ -183,6 +183,16 @@ void execute(std::vector<int> &fileContent) {
       instructionPointer++;
       break;
 
+    case _MUL:
+      a64 = a64 * b64;
+      instructionPointer++;
+      break;
+
+    case _DIV:
+      a64 = a64 / b64;
+      instructionPointer++;
+      break;
+
     default:
       std::cout << "Error: Unknown operation code at instruction "
                 << instructionPointer << "\n";

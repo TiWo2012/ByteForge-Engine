@@ -16,6 +16,8 @@
 #define _JNZ 10
 #define _ADD 11
 #define _SUB 12
+#define _MUL 13
+#define _DIV 14
 
 // Registers (64 bit)
 #define _64A 901
